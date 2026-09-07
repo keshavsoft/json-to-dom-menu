@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>json-to-dom-menu | Standalone Demo</title>
+    <!-- Fonts & Bootstrap 5 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        .brand-icon {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 36px;
+            background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+            border-radius: 8px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.25rem;
+            text-decoration: none;
+        }
+
+        .text-small {
+            font-size: 0.85rem;
+        }
+
+        .console-box {
+            background: #0f172a;
+            color: #38bdf8;
+            border-radius: 0.5rem;
+            padding: 0.75rem 1rem;
+            font-size: 0.8rem;
+            height: 240px;
+            overflow-y: auto;
+            font-family: monospace;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Target Container for Dynamic Header & Menu -->
+    <div id="header-container"></div>
+
+    <main class="container-fluid px-4 py-4">
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-body">
+                <h5 class="card-title fw-bold">json-to-dom-menu Standalone Demo</h5>
+                <p class="text-muted small">
+                    This demonstrates dynamic, responsive menu and subheader rendering built with <code>json-to-dom-menu</code>.
+                </p>
+                <div class="d-flex gap-2 mb-3">
+                    <button id="btn-update-badge" class="btn btn-sm btn-outline-primary">Update Badge Count</button>
+                    <button id="btn-toggle-orders" class="btn btn-sm btn-outline-secondary">Toggle Orders Active</button>
+                </div>
+                <div class="console-box" id="event-log">
+                    <div>[json-to-dom-menu] Event Log initialized...</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap 5 JS for mobile collapsible support -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+        import { Menu } from "./dist/v1/min.js";
+
+        const logElement = document.getElementById("event-log");
+        const log = (msg) => {
+            const entry = document.createElement("div");
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+        };
+
+        const menuItems = [
+            { id: "home", label: "Home", icon: "bi-house", href: "#/" },
+            { id: "dashboard", label: "Dashboard", icon: "bi-speedometer2", href: "#/dashboard" },
+            { id: "orders", label: "Orders", icon: "bi-table", active: true },
+            { id: "products", label: "Products", icon: "bi-grid", href: "#/products" },
+            { id: "customers", label: "Customers", icon: "bi-people", href: "#/customers" },
+            { id: "reset", label: "Reset", icon: "bi-arrow-clockwise", class: "text-info", isAction: true }
+        ];
+
+        const menu = new Menu({
+            targetContainerId: "header-container",
+            brand: {
+                title: "Purchases",
+                subtitle: "Hybrid Search & Table (Demo)",
+                iconText: "B",
+                href: "./"
+            },
+            items: menuItems,
+            subHeader: {
+                status: {
+                    id: "record-count-badge",
+                    label: "Status:",
+                    badgeText: "All 7,455 records",
+                    badgeClass: "badge bg-success"
+                },
+                actions: [
+                    { id: "reset-filters", label: "Reset Filters", icon: "bi-arrow-clockwise", class: "btn btn-sm btn-primary" },
+                    { id: "reload-server", label: "Reload Server", icon: "bi-cloud-arrow-down", class: "btn btn-sm btn-outline-secondary" }
+                ]
+            },
+            onItemClick: ({ inItem, inEvent }) => {
+                log(`Menu Item Clicked: ${inItem.id} (${inItem.label})`);
+                if (inItem.id === "reset") {
+                    inEvent.preventDefault();
+                    menu.collapseMobile();
+                }
+            },
+            onActionClick: ({ inAction, inEvent }) => {
+                log(`SubHeader Action Clicked: ${inAction.id} (${inAction.label})`);
+            }
+        });
+
+        menu.render();
+
+        let count = 7455;
+        document.getElementById("btn-update-badge").addEventListener("click", () => {
+            count = Math.max(0, count - 150);
+            menu.setBadge({
+                inText: `Showing ${count.toLocaleString()} of 7,455 records`,
+                inType: "warning"
+            });
+            log(`Updated badge to: Showing ${count.toLocaleString()} records`);
+        });
+
+        let ordersActive = true;
+        document.getElementById("btn-toggle-orders").addEventListener("click", () => {
+            ordersActive = !ordersActive;
+            menuItems.find(i => i.id === "orders").active = ordersActive;
+            menu.updateItems({ inItems: menuItems });
+            log(`Toggled Orders active state to: ${ordersActive}`);
+        });
+    </script>
+</body>
+
+</html>
