@@ -1,0 +1,29 @@
+{
+  "name": "json-to-dom-menu",
+  "version": "1.0.0",
+  "description": "Standalone, config-driven responsive Menu and Header renderer built on top of json-to-dom",
+  "type": "module",
+  "main": "src/v1/index.js",
+  "files": [
+    "src",
+    "docs",
+    "README.md"
+  ],
+  "exports": {
+    ".": "./src/v1/index.js",
+    "./v1": "./src/v1/index.js"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build"
+  },
+  "keywords": [
+    "json-to-dom",
+    "menu",
+    "navbar",
+    "header",
+    "renderer"
+  ],
+  "author": "KeshavSoft",
+  "license": "MIT"
+}
