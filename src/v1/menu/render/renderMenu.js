@@ -30,19 +30,25 @@ const renderMenu = ({ inMenu } = {}) => {
     brandAnchor.href = brand.href || "./";
     brandAnchor.className = "d-flex align-items-center text-white text-decoration-none my-1";
 
-    const brandIcon = document.createElement("span");
-    brandIcon.className = "brand-icon me-2";
-    brandIcon.textContent = brand.iconText || "B";
+        if (brand.icon) {
+            const brandIcon = document.createElement("i");
+            brandIcon.className = `bi ${brand.icon} fs-2 me-2 text-white`;
+            brandAnchor.appendChild(brandIcon);
+        } else {
+            const brandIcon = document.createElement("span");
+            brandIcon.className = "brand-icon me-2";
+            brandIcon.textContent = brand.iconText || "B";
+            brandAnchor.appendChild(brandIcon);
+        }
 
-    const brandTextDiv = document.createElement("div");
-    brandTextDiv.className = "d-flex flex-column";
-    brandTextDiv.innerHTML = `
-        <span class="fs-5 fw-bold lh-1">${brand.title || "Menu"}</span>
-        <small class="text-secondary" style="font-size: 0.72rem;">${brand.subtitle || ""}</small>
-    `;
+        const brandTextDiv = document.createElement("div");
+        brandTextDiv.className = "d-flex flex-column";
+        brandTextDiv.innerHTML = `
+            <span class="fs-5 fw-bold lh-1">${brand.title || "Menu"}</span>
+            <small class="text-secondary" style="font-size: 0.72rem;">${brand.subtitle || ""}</small>
+        `;
 
-    brandAnchor.appendChild(brandIcon);
-    brandAnchor.appendChild(brandTextDiv);
+        brandAnchor.appendChild(brandTextDiv);
     topBarContainer.appendChild(brandAnchor);
 
     // Desktop Nav

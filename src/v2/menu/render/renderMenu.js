@@ -26,14 +26,18 @@ const renderMenu = ({ inMenu } = {}) => {
 
     // Brand (optional)
     const brand = localMenu.brand;
-    const hasBrand = Boolean(brand && (brand.title || brand.iconText || brand.subtitle));
+    const hasBrand = Boolean(brand && (brand.title || brand.iconText || brand.icon || brand.subtitle));
 
     if (hasBrand) {
         const brandAnchor = document.createElement("a");
         brandAnchor.href = brand.href || "./";
         brandAnchor.className = "d-flex align-items-center text-white text-decoration-none my-1";
 
-        if (brand.iconText) {
+        if (brand.icon) {
+            const brandIcon = document.createElement("i");
+            brandIcon.className = `bi ${brand.icon} fs-2 me-2 text-white`;
+            brandAnchor.appendChild(brandIcon);
+        } else if (brand.iconText) {
             const brandIcon = document.createElement("span");
             brandIcon.className = "brand-icon me-2";
             brandIcon.textContent = brand.iconText;

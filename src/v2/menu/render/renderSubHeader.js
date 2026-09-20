@@ -2,7 +2,7 @@ const renderSubHeader = ({ inSubHeader = {}, inOnAction } = {}) => {
     const localSubHeader = inSubHeader;
     const localOnAction = inOnAction;
 
-    if (!localSubHeader || (!localSubHeader.status && !localSubHeader.actions)) {
+    if (!localSubHeader || (!localSubHeader.status && !localSubHeader.actions && !localSubHeader.search)) {
         return null;
     }
 
@@ -11,6 +11,25 @@ const renderSubHeader = ({ inSubHeader = {}, inOnAction } = {}) => {
 
     const container = document.createElement("div");
     container.className = "container-fluid px-2 px-md-4 d-flex flex-wrap align-items-center justify-content-between gap-2";
+
+    // 1. Search Section (Optional, matching Bootstrap Double Header search bar)
+    if (localSubHeader.search) {
+        const searchForm = document.createElement("form");
+        searchForm.className = localSubHeader.search.formClass || "col-12 col-lg-auto mb-2 mb-lg-0 me-lg-auto";
+        searchForm.role = "search";
+
+        const searchInput = document.createElement("input");
+        searchInput.type = "search";
+        searchInput.className = localSubHeader.search.inputClass || "form-control form-control-sm";
+        searchInput.placeholder = localSubHeader.search.placeholder || "Search...";
+        searchInput.setAttribute("aria-label", localSubHeader.search.placeholder || "Search");
+        if (localSubHeader.search.id) {
+            searchInput.id = localSubHeader.search.id;
+        }
+
+        searchForm.appendChild(searchInput);
+        container.appendChild(searchForm);
+    }
 
     // 1. Status Section
     if (localSubHeader.status) {
